@@ -203,10 +203,10 @@ class ECLVM {
                 if (!offset) {
                     this.ecl.out("Fatal error: unknown sub call - "+name);
                     this.offset = 0;
-                    return 0;   
+                    return 0;
                 }
                 if (instr.id == 11) {
-                    this.stack.ptr -= instr.popCnt*2;
+                    this.stack.ptr -= instr.popCnt/4;
                     this.call(file, offset);
                     // copy params to the called sub vars
                     for (let i=0; i<params.length; ++i) {
@@ -458,7 +458,8 @@ class ECLVM {
             default:
                 this.ecl.out(`unknown opcode ${instr.id}`);
         }
-        this.stack.ptr -= instr.popCnt*2;
+        // popCnt is by how many bytes the game increases the stack ptr after ins. It's 8 per popped value
+        this.stack.ptr -= instr.popCnt/4; // divide by 8, multiple by 2
         }
         if (!noInc)
             this.offset += instr.size;
