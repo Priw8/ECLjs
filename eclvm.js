@@ -455,8 +455,14 @@ class ECLVM {
             case 93:
                 this.ecl.out(`unimplemented opcode ${instr.id}: it's unclear how it works exactly`);
                 break;
-            default:
-                this.ecl.out(`unknown opcode ${instr.id}`);
+            default: {
+                let found = 0;
+                for(let i=0; i<this.ecl.extraIns.length && !found; ++i)
+                    found = this.ecl.extraIns[i](this, instr);
+
+                if (!found)
+                    this.ecl.out(`unknown opcode ${instr.id}`);
+            }
         }
         // popCnt is by how many bytes the game increases the stack ptr after ins. It's 8 per popped value
         this.stack.ptr -= instr.popCnt/4; // divide by 8, multiple by 2

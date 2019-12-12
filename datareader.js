@@ -76,6 +76,6 @@ class DataReader {
         return ret;
     }
     align(alignment) {
-        this.offset = (this.offset + 3) & ~3;
+        this.offset = (this.offset + (alignment - 1)) & ~(alignment - 1);
     }
 }

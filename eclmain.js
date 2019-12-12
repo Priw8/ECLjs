@@ -3,6 +3,7 @@ class ECL {
         this.files = {};
         this.vms = [];
         this.out = Function.prototype;
+        this.extraIns = [];
         this.rankMask = DIFF_L;
     }
     setOutput(fun) {
@@ -13,6 +14,9 @@ class ECL {
     }
     load(name, buffer) {
         this.files[name] = new ECLfile(buffer, name, this);
+    }
+    addIns(fun) {
+        this.extraIns.push(fun);
     }
     findSub(name) {
         let offset = 0, file = null;

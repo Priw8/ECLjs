@@ -10,23 +10,53 @@
         <script src="eclvm.js"></script>
         <script src="eclmain.js"></script>
     </head>
-    <input multiple id="ECLinput" type="file"/>
-    <br/>
-    <button onclick="loadDemo();">Load</button>
-    <br/>
-    Difficulty:<br/>
-    <input type="radio" name="diff" value="0">Easy<br/>
-    <input type="radio" name="diff" value="1">Normal<br/>
-    <input type="radio" name="diff" value="2">Hard<br/>
-    <input type="radio" name="diff" value="3" checked>Lunatic<br/>
-    <input type="radio" name="diff" value="5">Overdrive<br/>
-    <input type="radio" name="diff" value="4">Extra<br/>
-    <input type="radio" name="diff" value="6">"Wrong easy"<br/>
-    <input type="radio" name="diff" value="7">"Wrong normal"<br/>
+    <div style="float: left">
+        <input multiple id="ECLinput" type="file"/>
         <br/>
-    Output (hint: ins_30 is printf)
-    <br/>
-    <textarea readonly style="height: 512px; width: 256px;" id="output"></textarea>
+        <button onclick="loadDemo();">Load</button>
+        <br/>
+        Difficulty:<br/>
+        <input type="radio" name="diff" value="0">Easy<br/>
+        <input type="radio" name="diff" value="1">Normal<br/>
+        <input type="radio" name="diff" value="2">Hard<br/>
+        <input type="radio" name="diff" value="3" checked>Lunatic<br/>
+        <input type="radio" name="diff" value="5">Overdrive<br/>
+        <input type="radio" name="diff" value="4">Extra<br/>
+        <input type="radio" name="diff" value="6">"Wrong easy"<br/>
+        <input type="radio" name="diff" value="7">"Wrong normal"<br/>
+    </div>
+    <div style="float: left">
+        Output (hint: ins_30 is printf)
+        <br/>
+        <textarea readonly style="height: 512px; width: 256px;" id="output"></textarea>
+    </div>
+    <div style="float: left">
+        Custom instructions
+        <br/>
+        <textarea spellcheck="false" style="height: 512px; width: 712px;" id="custom_ins">
+// NOTE: this is evaluated as javascript, don't put stuff you don't want to execute here
+window.customIns = function(vm, instr) {
+    switch(instr.id) {
+        case 200:
+            vm.ecl.out("Hello world!");
+            break;
+        case 201: {
+            // ins_201(intvar v, int a)
+            // take 1 integer from stack, 1 from argument a,
+            // sum them and store value in variable v
+            let addr = vm.getAddressOfIntArg(instr, 0);
+            vm.writeVar(addr, vm.getIntArg(instr, 1) + vm.stack.popInt());
+            break;
+        }
+        default:
+            // if no ins was found, this function
+            // is expected to return 0
+            return 0;
+    }
+    return 1;
+}
+</textarea>
+    </div>
     <script>
         async function loadDemo() {
             const $file = document.querySelector("#ECLinput");
@@ -42,6 +72,15 @@
                 $out.value += txt + "\n";
                 $out.scrollTop = $out.scrollHeight;
             });
+            const $custom = document.querySelector("#custom_ins");
+            try {
+                eval($custom.value);
+                if (typeof window.customIns != "function")
+                    throw "code does not return a function";
+                ecl.addIns(window.customIns);
+            } catch(e) {
+                ecl.out(`Invalid custom instruction input: ${e}`);
+            }
             ecl.setDiff(parseInt(document.querySelector("input[name='diff']:checked").value));
             for (let i=0; i<$file.files.length; ++i) {
                 const file = $file.files[i];
