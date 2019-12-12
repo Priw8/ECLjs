@@ -31,9 +31,7 @@ class ECL {
         this.run();
     }
     frame() {
-        if (this.vms.length == 0)
-            this.out("All VMs finished execution");
-        else for (let i=0; i<this.vms.length; ++i) {
+        for (let i=0; i<this.vms.length; ++i) {
             const vm = this.vms[i];
             if (vm.delete || !vm.frame()) {
                 this.vms.splice(i--, 1);
@@ -42,6 +40,10 @@ class ECL {
     }
     async run() {
         while(1) {
+            if (this.vms.length == 0) {
+                this.out("All VMs finished execution");
+                return;
+            }
             this.frame();
             await new Promise(resolve => {
                 setTimeout(resolve, 1000/60);
