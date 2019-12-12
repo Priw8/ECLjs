@@ -254,7 +254,7 @@ class ECLVM {
                 this.ecl.out(`ins_21: ${this.getIntArg(instr, 0)}`);
                 break;
             case 23:
-                this.wait = this.getIntArg(instr, 0) - 1;
+                this.wait = this.getIntArg(instr, 0);
                 break;
             case 30: {
                 let str = this.getCstringArg(instr, 0);
@@ -467,6 +467,11 @@ class ECLVM {
         if (!noInc)
             this.offset += instr.size;
 
+        if (this.wait) {
+            --this.wait;
+            return 0;
+        }
+        
         return 1;
     }
 }
