@@ -4,6 +4,8 @@ class ECL {
         this.vms = [];
         this.out = Function.prototype;
         this.extraIns = [];
+        this.extraVarRead = [];
+        this.extraVarWrite = [];
         this.rankMask = DIFF_L;
     }
     setOutput(fun) {
@@ -17,6 +19,10 @@ class ECL {
     }
     addIns(fun) {
         this.extraIns.push(fun);
+    }
+    addVar(funRead, funWrite) {
+        this.extraVarRead.push(funRead);
+        this.extraVarWrite.push(funWrite);
     }
     findSub(name) {
         let offset = 0, file = null;

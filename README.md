@@ -1,7 +1,7 @@
 # ECLjs - https://priw8.github.io/ECLjs/
 
 ## What is this?
-An interpreter of compiled ECL (Enemy Control Language) scripts used by modern Touhou games (th10+ format, th13+ instruction numbers). It only implements the basic opcodes, the so-called system instructions (ins_0 - ins_93). Non-stack variables mostly don't exist, apart from `RAND`, which works as expected, and `SPELL_ID`, which is always -1. Reading from other variables returns 0.
+An interpreter of compiled ECL (Enemy Control Language) scripts used by modern Touhou games (th10+ format, th13+ instruction numbers). It only implements the basic opcodes, the so-called system instructions (ins_0 - ins_93), but more can be added. No non-stack variables are defined by default, but they can be easily added by using the `ECL.addVar` function (check the demo in `index.html` for examples of both adding instructions and variables).
 
 ## Sources/credits/etc
 - everyone who worked on [thecl](https://github.com/thpatch/thtk/tree/master/thecl) 

@@ -51,30 +51,26 @@ class ECLVM {
         if (addr > -1000)
             return this.stack.stack[addr];
         else {
-            switch(addr + 10000) {
-                case 0:
-                    // TODO: implement ZUN's rand function
-                    return Math.random()*INT32_MAX;
-                case 93: // SPELL_ID
-                    return -1;
-                default:
-                    this.ecl.out("unknown var read: " + addr);
-                    return 0;
+            let ret = null;
+            for (let i=0; i<this.ecl.extraVarWrite.length && ret == null; ++i)
+                ret = this.ecl.extraVarRead[i](this, addr);
+            
+            if (ret == null) {
+                this.ecl.out("unknown var write: " + addr);
             }
+            return ret;
         }
     }
     writeVar(addr, val) {
         if (addr >= 0)
             this.stack.stack[addr] = val;
         else {
-            switch(addr + 10000) {
-                case 0:
-                case 93: // SPELL_ID
-                    this.ecl.out(`ERROR: variable ${addr} is readonly`);
-                    break;
-                default:
-                    this.ecl.out("unknown var write: " + addr);
-            }
+            let found = 0;
+            for (let i=0; i<this.ecl.extraVarWrite.length && !found; ++i)
+                found = this.ecl.extraVarWrite[i](this, addr, val);
+            
+            if (!found)
+                this.ecl.out("unknown var write: " + addr);
         }
     }
     getIntArg(instr, n, extraOffset=0) {

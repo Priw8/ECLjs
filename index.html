@@ -42,9 +42,9 @@
         <textarea readonly style="height: 512px; width: 256px;" id="output"></textarea>
     </div>
     <div style="float: left">
-        Custom instructions
+        Custom instructions and variables
         <br/>
-        <textarea spellcheck="false" style="height: 512px; width: 712px;" id="custom_ins">
+        <textarea spellcheck="false" style="height: 512px; width: 742px;" id="custom_ins">
 // NOTE: this is evaluated as javascript, don't put stuff you don't want to execute here
 window.customIns = function(vm, instr) {
     switch(instr.id) {
@@ -66,6 +66,37 @@ window.customIns = function(vm, instr) {
     }
     return 1;
 }
+
+const globals = [0, 0, 0, 0];
+window.customVarRead = function(vm, id) {
+    switch(id) {
+        case -9999:
+            return Math.random();
+        case -9926:
+        case -9925:
+        case -9924:
+        case -9923:
+            return globals[id + 9926];
+        default:
+            // expected to return null when variable was not found.
+            return null;
+    }
+}
+window.customVarWrite = function(vm, id, val) {
+    switch(id) {
+        case -9926:
+        case -9925:
+        case -9924:
+        case -9923:
+            globals[id + 9926] = val;
+            break;
+        default:
+            // expected to return 0 when variable was not found.
+            return 0;
+    }
+    return 1;
+}
+
 </textarea>
     </div>
     <script>
@@ -86,11 +117,12 @@ window.customIns = function(vm, instr) {
             const $custom = document.querySelector("#custom_ins");
             try {
                 eval($custom.value);
-                if (typeof window.customIns != "function")
-                    throw "code does not return a function";
+                if (typeof window.customIns != "function" || typeof window.customVarRead != "function" || typeof window.customVarWrite != "function")
+                    throw "code does set all required functions";
                 ecl.addIns(window.customIns);
+                ecl.addVar(window.customVarRead, window.customVarWrite);
             } catch(e) {
-                ecl.out(`Invalid custom instruction input: ${e}`);
+                ecl.out(`Invalid custom instruction/variable input: ${e}`);
             }
             ecl.setDiff(parseInt(document.querySelector("input[name='diff']:checked").value));
             for (let i=0; i<$file.files.length; ++i) {
