@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>ECLjs demo</title>
+        <script src="datareader.js"></script>
+        <script src="eclh.js"></script>
+        <script src="eclfile.js"></script>
+        <script src="eclstack.js"></script>
+        <script src="eclvm.js"></script>
+        <script src="eclmain.js"></script>
+    </head>
+    <input multiple id="ECLinput" type="file"/>
+    <br/>
+    <button onclick="loadDemo();">Load</button>
+    <br/>
+    Difficulty:<br/>
+    <input type="radio" name="diff" value="0">Easy<br/>
+    <input type="radio" name="diff" value="1">Normal<br/>
+    <input type="radio" name="diff" value="2">Hard<br/>
+    <input type="radio" name="diff" value="3" checked>Lunatic<br/>
+    <input type="radio" name="diff" value="5">Overdrive<br/>
+    <input type="radio" name="diff" value="4">Extra<br/>
+    <input type="radio" name="diff" value="6">"Wrong easy"<br/>
+    <input type="radio" name="diff" value="7">"Wrong normal"<br/>
+        <br/>
+    Output (hint: ins_30 is printf)
+    <br/>
+    <textarea readonly style="height: 512px; width: 256px;" id="output"></textarea>
+    <script>
+        async function loadDemo() {
+            const $file = document.querySelector("#ECLinput");
+            if ($file.files.length == 0) {
+                alert("no file loaded");
+                return;
+            }
+            
+            const ecl = new ECL();
+            const $out = document.querySelector("#output");
+            $out.value = "";
+            ecl.setOutput(txt => {
+                $out.value += txt + "\n";
+                $out.scrollTop = $out.scrollHeight;
+            });
+            ecl.setDiff(parseInt(document.querySelector("input[name='diff']:checked").value));
+            for (let i=0; i<$file.files.length; ++i) {
+                const file = $file.files[i];
+                const buffer = await file.arrayBuffer();
+                ecl.load(file.name, buffer);
+            }
+            ecl.start();        
+        }
+    </script>
+</html>
