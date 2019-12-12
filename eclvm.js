@@ -56,7 +56,8 @@ class ECLVM {
                 ret = this.ecl.extraVarRead[i](this, addr);
             
             if (ret == null) {
-                this.ecl.out("unknown var write: " + addr);
+                this.ecl.out("unknown var read: " + addr);
+                return 0;
             }
             return ret;
         }
