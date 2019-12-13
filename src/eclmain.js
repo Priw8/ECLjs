@@ -7,6 +7,7 @@ class ECL {
         this.extraVarRead = [];
         this.extraVarWrite = [];
         this.rankMask = DIFF_L;
+        this.startTime = null;
     }
     setOutput(fun) {
         this.out = fun;
@@ -55,9 +56,10 @@ class ECL {
         }
     }
     async run() {
+        this.startTime = new Date();
         while(1) {
             if (this.vms.length == 0) {
-                this.out("All VMs finished execution");
+                this.out(`All VMs finished execution in ${(new Date().getTime() - this.startTime.getTime())/1000}s`);
                 return;
             }
             this.frame();
