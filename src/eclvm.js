@@ -296,10 +296,10 @@ class ECLVM {
                 this.stack.pushFloat(this.stack.popFloat() + this.stack.popFloat());
                 break;
             case 52: // subi
-                this.stack.pushInt(this.stack.popInt() - this.stack.popInt());
+                this.stack.pushInt(-this.stack.popInt() + this.stack.popInt());
                 break;
             case 53: // subf
-                this.stack.pushFloat(this.stack.popFloat() - this.stack.popFloat());
+                this.stack.pushFloat(-this.stack.popFloat() + this.stack.popFloat());
                 break;
             case 54: // muli
                 this.stack.pushInt(this.stack.popInt() * this.stack.popInt());
@@ -307,15 +307,24 @@ class ECLVM {
             case 55: // mulf
                 this.stack.pushFloat(this.stack.popFloat() * this.stack.popFloat());
                 break;
-            case 56: // divi
-                this.stack.pushInt(Math.floor(this.stack.popInt() / this.stack.popInt()));
+            case 56: { // divi
+                const v2 = this.stack.popInt();
+                const v1 = this.stack.popInt();
+                this.stack.pushInt(Math.floor(v1 / v2));
                 break;
-            case 57: // divf
-                this.stack.pushFloat(this.stack.popFloat() / this.stack.popFloat());
+            }
+            case 57: { // divf
+                const v2 = this.stack.popFloat();
+                const v1 = this.stack.popFloat();
+                this.stack.pushInt(v1 / v2);
                 break;
-            case 58: // modi
-                this.stack.pushInt(Math.floor(this.stack.popInt() % this.stack.popInt()));
+            }
+            case 58: { // modi
+                const v2 = this.stack.popInt();
+                const v1 = this.stack.popInt();
+                this.stack.pushInt(Math.floor(v1 % v2));
                 break;
+            }
             case 59: // eqi
                 this.stack.pushInt(this.stack.popInt() == this.stack.popInt());
                 break;
