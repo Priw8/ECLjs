@@ -36,10 +36,10 @@ class ECL {
     }
     create(sub, host) {
         let [offset, file] = this.findSub(sub);
-        if (offset == 0) 
+        if (offset == 0) {
             this.out(`Error: unable to find sub ${sub}`);
             return null;
-        else {
+        } else {
             let vm = new ECLVM(file, offset, this, null, host);
             this.vms.push(vm);
             return vm;
