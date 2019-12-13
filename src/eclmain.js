@@ -49,6 +49,7 @@ class ECL {
         for (let i=0; i<this.vms.length; ++i) {
             const vm = this.vms[i];
             if (vm.delete || !vm.frame()) {
+                vm.delete = true;
                 this.vms.splice(i--, 1);
             }
         }
