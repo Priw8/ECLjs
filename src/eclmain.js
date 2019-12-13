@@ -41,7 +41,6 @@ class ECL {
         else {
             let vm = new ECLVM(file, offset, this, null, host);
             this.vms.push(vm);
-            this.run();
         }
     }
     frame() {
