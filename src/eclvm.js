@@ -3,6 +3,7 @@ class ECLVM {
         this.ecl = ecl;
         this.offset = 0;
         this.file = null;
+        this.timedChanges = [null, null, null, null, null, null, null, null];
         if (asyncList == null) {
             this.asyncList = new Array(16);
             for (let i=0; i<this.asyncList.length; ++i)
@@ -48,6 +49,13 @@ class ECLVM {
         }
         this.offset = this.stack.pop();
         this.time = this.stack.pop();
+    }
+    timedChange(addr, time, mode, start, end, id=-1) {
+        // 8 slots are used by the floatTime instruction, other can be used by external instructions
+        if (id == -1)
+            this.timedChanges.push(new ECLTimedChange(this, addr, time, mode, start, end));
+        else
+            this.timedChanges[id] = new ECLTimedChange(this, addr, time, mode, start, end);
     }
     getVar(addr) {
         if (addr > -1000)
@@ -147,6 +155,18 @@ class ECLVM {
         return this.getVarAddress(val);
     }
     frame() {
+        for (let i=0; i<this.timedChanges.length; ++i) {
+            let tc = this.timedChanges[i];
+            if (tc != null) {
+                let done = tc.frame();
+                if (done) {
+                    if (i < 8)
+                        this.timedChanges[i] = null;
+                    else
+                        this.timedChanges.splice(i--, 1);
+                }
+            }
+        }
         if (this.wait) {
             --this.wait;
         } else {
@@ -459,6 +479,15 @@ class ECLVM {
                 break;
             }
             case 91:
+                this.timedChange(
+                    this.getAddressOfFloatArg(instr, 1),
+                    this.getIntArg(instr, 2),
+                    this.getIntArg(instr, 3),
+                    this.getFloatArg(instr, 4),
+                    this.getFloatArg(instr, 5),
+                    this.getIntArg(instr, 0)
+                )
+                break;
             case 92:
             case 93:
                 this.ecl.out(`unimplemented opcode ${instr.id}: it's unclear how it works exactly`);
