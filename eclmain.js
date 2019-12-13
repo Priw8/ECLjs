@@ -34,11 +34,15 @@ class ECL {
         }
         return [offset, file];
     }
-    start() {
-        let [offset, file] = this.findSub("main");
-        let vm = new ECLVM(file, offset, this, null);
-        this.vms.push(vm);
-        this.run();
+    create(sub, host) {
+        let [offset, file] = this.findSub(sub);
+        if (offset == 0) 
+            this.out(`Error: unable to find sub ${sub}`);
+        else {
+            let vm = new ECLVM(file, offset, this, null, host);
+            this.vms.push(vm);
+            this.run();
+        }
     }
     frame() {
         for (let i=0; i<this.vms.length; ++i) {

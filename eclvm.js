@@ -1,5 +1,5 @@
 class ECLVM {
-    constructor(file, offset, ecl, asyncList) {
+    constructor(file, offset, ecl, asyncList, host) {
         this.ecl = ecl;
         this.offset = 0;
         this.file = null;
@@ -11,6 +11,8 @@ class ECLVM {
             this.asyncList = asyncList;
 
         this.stack = new ECLstack();
+        // the host exists for attaching other objects to the VM and then using them in instructions/variables
+        this.host = host;
 
         this.delete = 0;
         this.time = 0;
@@ -210,7 +212,7 @@ class ECLVM {
                         this.stack.stack[this.stack.ptr + i + 1] = params[i];
                     }
                 } else {
-                    const vm = new ECLVM(file, offset, this.ecl, this.asyncList);
+                    const vm = new ECLVM(file, offset, this.ecl, this.asyncList, this.host);
                     this.ecl.vms.push(vm);
                     if (id >= 0) {
                         if (this.asyncList[id] != null)

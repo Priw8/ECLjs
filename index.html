@@ -130,7 +130,7 @@ window.customVarWrite = function(vm, id, val) {
                 const buffer = await file.arrayBuffer();
                 ecl.load(file.name, buffer);
             }
-            ecl.start();        
+            ecl.create("main", null);        
         }
     </script>
 </html>
