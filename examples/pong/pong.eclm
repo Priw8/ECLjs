@@ -1,0 +1,21 @@
+!eclmap
+!ins_names
+30 printf
+803 enmSize
+1000 render
+
+!ins_signatures
+300 mffffS
+803 ffS
+
+!gvar_names
+-10001 INPUT
+-9997 X
+-9996 Y
+-9995 W
+-9994 H
+
+!gvar_types
+-10001 $
+-9995 %
+-9994 %

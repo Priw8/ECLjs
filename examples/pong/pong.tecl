@@ -1,0 +1,73 @@
+#eclmap "th17.eclm"
+#eclmap "pong.eclm"
+#ins "1000"
+
+global KEY_LEFT = 1;
+global KEY_RIGHT = 2;
+global KEY_A = 4;
+global KEY_D = 8;
+
+void main() {
+    enmCreate("Player", 0f, 418f, 100f, 20f, 0);
+    enmCreate("Player", 0f, 30f, 100f, 20f, 1);
+    enmCreate("Ball", 0f, 224f, 20f, 20f, 2);
+    while(1) {
+        render();
+        wait(1);
+    }
+}
+
+void Player() {
+    int left, right;
+    if (ID == 0) {
+        left = KEY_LEFT;
+        right = KEY_RIGHT;
+    } else {
+        left = KEY_A;
+        right = KEY_D;
+    }
+    while(1) {
+        if ((INPUT & left) && X > -196f)
+            movePos(X - 5f, Y);
+        else if ((INPUT & right) && X < 196f)
+            movePos(X + 5f, Y);
+        wait(1);
+    }
+}
+
+void Ball() {
+    wait(120);
+    float dirX = (RAND % 2) ? -1f : 1f;
+    float dirY = (RAND % 2) ? -1f : 1f;
+    movePos(X + 7f*dirX, Y + 7f*dirY);
+    wait(30);
+    while(1) {
+        if (X < -196f || X > 196f)
+            dirX = -dirX;
+        if (Y < 0f || Y > 448f) {
+            wait(60);
+            movePos(0f, 224f);
+            dirX = (RAND % 2) ? -1f : 1f;
+            dirY = (RAND % 2) ? -1f : 1f;
+            wait(60);
+            movePos(X + 7f*dirX, Y + 7f*dirY);
+            wait(30);
+        }
+        int iter = 2;
+        while(iter--) {
+            float w, h, x, y;
+            enmSize(w, h, iter);
+            enmPos(x, y, iter);
+            if (
+                X - W/2f < x + w/2f &&
+                X + W/2f > x - w/2f &&
+                Y - H/2f < y + h/2f &&
+                Y + H/2f > y - h/2f
+            ) {
+                dirY = -dirY;
+            }
+        }
+        movePos(X + 7f*dirX, Y + 7f*dirY);
+        wait(1);
+    }
+}
