@@ -167,11 +167,11 @@ class ECLVM {
                 }
             }
         }
-        if (this.wait) {
+        if (this.wait > 0) {
             --this.wait;
         } else {
             while(this.execute());
-            if (!this.wait)
+            if (this.wait <= 0)
                 this.time += 1;
         }
         return this.offset;
@@ -277,6 +277,9 @@ class ECLVM {
                 break;
             case 23:
                 this.wait = this.getIntArg(instr, 0);
+                break;
+            case 24:
+                this.wait = this.getFloatArg(instr, 0);
                 break;
             case 30: {
                 let str = this.getCstringArg(instr, 0);
