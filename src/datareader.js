@@ -15,7 +15,8 @@ class DataReader {
             uint32: [],
             int32: [],
             float: [],
-            cstring: []
+            cstring: [],
+            struct: {}
         }
     }
     getOffset() {
@@ -79,8 +80,16 @@ class DataReader {
         return ret;
     }
     struct(struct) {
+        const id = struct[0];
+        const off = this.offset;
+        if (typeof this.cache.struct[id] == "undefined") {
+            this.cache.struct[id] = [];
+        } else if (typeof this.cache.struct[id][off] != "undefined") {
+            return this.cache.struct[id][off];
+        }
+
         let ret = {};
-        for (let i=0; i<struct.length; i+=2) {
+        for (let i=1; i<struct.length; i+=2) {
             const type = struct[i];
             const name = struct[i+1];
             if (type != "arr") {
@@ -95,6 +104,7 @@ class DataReader {
                 i += 2;
             }
         }
+        this.cache.struct[id][off] = ret;
         return ret;
     }
     align(alignment) {

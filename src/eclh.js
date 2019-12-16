@@ -23,6 +23,7 @@ const CAST_IF = 26217;
 const CAST_FI = 26982;
 
 const ECL_HEADER = [
+    "ECL_HEADER",
     "uint32", "magic",
     "uint16", "one",
     "uint16", "includeLength",
@@ -33,11 +34,13 @@ const ECL_HEADER = [
 ] 
 
 const INCLUDE_HEADER = [
+    "INCLUDE_HEADER",
     "uint32", "magic",
     "uint32", "cnt"
 ]
 
 const SUB_HEADER = [
+    "SUB_HEADER",
     "uint32", "magic",
     "uint32", "dataOffset",
     "arr", "zero", "uint32", 2
@@ -60,6 +63,7 @@ const SUB_HEADER = [
     unsigned char data[];*/
 
 const INSTR = [
+    "INSTR",
     "uint32", "time",
     "uint16", "id",
     "uint16", "size",
