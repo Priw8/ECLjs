@@ -339,7 +339,7 @@ class ECLVM {
             case 57: { // divf
                 const v2 = this.stack.popFloat();
                 const v1 = this.stack.popFloat();
-                this.stack.pushInt(v1 / v2);
+                this.stack.pushFloat(v1 / v2);
                 break;
             }
             case 58: { // modi
